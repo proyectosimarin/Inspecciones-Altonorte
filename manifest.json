@@ -1,0 +1,16 @@
+{
+  "name": "Cartillas SAFEWORK",
+  "short_name": "SAFEWORK",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ECEFF1",
+  "theme_color": "#9E4B25",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
