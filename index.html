@@ -230,12 +230,15 @@ dialog::backdrop{background:rgba(12,16,19,.6)}
     <div id="sections"></div>
 <!-- Sección Evidencia Fotográfica -->
     <div class="seccion-fotos" style="margin-top: 24px; padding: 18px 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h3 style="margin: 0; font-family: var(--fh); font-weight: 700; font-size: 21px; color: var(--ink);">Evidencia Fotográfica (Opcional)</h3>
-        <button type="button" id="btn-agregar-foto" aria-label="Agregar foto" style="background: var(--copper); color: var(--on-copper); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding-bottom: 4px;">+</button>
       </div>
-      <p style="margin: 0 0 10px 0; font-size: 14.5px; color: var(--ink-2);">Añade fotos desde tu cámara o galería.</p>
-      <input type="file" id="input-camara-galeria" accept="image/*" style="display: none;">
+      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <button type="button" id="btn-camara" style="flex: 1; background: var(--copper); color: white; border: none; border-radius: 8px; padding: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">📷 Cámara</button>
+        <button type="button" id="btn-galeria" style="flex: 1; background: var(--ink-2); color: white; border: none; border-radius: 8px; padding: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">🖼️ Galería</button>
+      </div>
+      <input type="file" id="input-camara" accept="image/*" capture="environment" style="display: none;">
+      <input type="file" id="input-galeria" accept="image/*" multiple style="display: none;">
       <div id="galeria-previa" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
     </div>
     <div class="spacer"></div>
@@ -995,25 +998,34 @@ for (const k of HEADER_KEYS) {
 }
 
 /* ---------- evidencia fotográfica ---------- */
-const btnFoto = $('#btn-agregar-foto');
-const inputFoto = $('#input-camara-galeria');
+const btnCamara = $('#btn-camara');
+const btnGaleria = $('#btn-galeria');
+const inputCamara = $('#input-camara');
+const inputGaleria = $('#input-galeria');
 const galeriaPrevia = $('#galeria-previa');
 
-btnFoto.addEventListener('click', () => { inputFoto.click(); });
+btnCamara.addEventListener('click', () => { inputCamara.click(); });
+btnGaleria.addEventListener('click', () => { inputGaleria.click(); });
 
-inputFoto.addEventListener('change', async (e) => {
+const procesarFotos = async (e) => {
   const archivos = Array.from(e.target.files);
   if (archivos.length === 0) return;
+  
   for (const archivo of archivos) {
     try {
       const fotoComprimida = await comprimirImagen(archivo, 1280, 0.75);
       fotosAdjuntas.push(fotoComprimida);
     } catch (err) { console.error("Error al comprimir", err); }
   }
+  
   renderGaleria();
-  inputFoto.value = ''; // Limpiar input para permitir reelección
-  st.exported = false; saveSoon();
-});
+  e.target.value = ''; // Limpiar input para permitir reelección
+  st.exported = false;
+  saveSoon();
+};
+
+inputCamara.addEventListener('change', procesarFotos);
+inputGaleria.addEventListener('change', procesarFotos);
 
 function renderGaleria() {
   if (!galeriaPrevia) return;
