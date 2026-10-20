@@ -757,13 +757,13 @@ for (const c of CARTILLAS) {
   c.verText = c.verText != null ? c.verText : 'Versión ' + c.ver;
   c.base    = c.base || `el formulario ${c.code} D (${c.ver})`;
   let n = 0;
-  for (const s of c.sections) {
-    const k = KINDS[s.k] || {};
-    s.title = s.t || k.t;
-    s.opts  = s.o || (s.two ? ['SI','NO'] : k.o);
-    s.items = s.items.map(q => typeof q === 'string' ? { n: ++n, q } : Object.assign({ n: ++n }, q));
-    s.items.forEach(it => { it.opts = it.o || s.opts; it.k = s.k; });
-  }
+for (const s of c.sections) {
+        const k = KINDS[s.k] || {};
+        s.title = s.t || k.t;
+        s.opts  = ['SI', 'NO', 'NA']; // Fuerza las 3 opciones en el encabezado de sección
+        s.items = s.items.map(q => typeof q === 'string' ? { n: ++n, q } : Object.assign({ n: ++n }, q));
+        s.items.forEach(it => { it.opts = ['SI', 'NO', 'NA']; it.k = s.k; }); // Fuerza las 3 opciones en todas las preguntas
+      }
   c.total = n;
 }
 const itemsOf = c => c.sections.flatMap(s => s.items);
